@@ -94,9 +94,28 @@ def plots():
     #plot_solutions(ax)
     plt.show()
 
+def group_by_distance(points, threshold=5):
+    groups = []
+    for point in points:
+        added = False
+        for group in groups:
+            if any(np.linalg.norm(np.array(point) - np.array(other_point)) <= threshold for other_point in group):
+                group.append(point)
+                added = True
+                break
+        if not added:
+            groups.append([point])  
+    return groups
+
+def groups_as_ints(groups):
+        return [[grid.tuple_to_int(point) for point in group] for group in groups]
+
 def main():
-    #plots()
-    print(grid)
+    points = [grid.int_to_tuple(point) for point in sorted(grid.solutions_types) if point >0]
+    groups = group_by_distance(points)
+    ints = groups_as_ints(groups)
+    print(sorted(grid.solutions_types))
+    print(ints)
 
 if __name__ == "__main__":
     main()
